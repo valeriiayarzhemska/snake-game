@@ -6,7 +6,7 @@ import {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IGlobalState } from '../../store/reducers';
-import { IObjectBody, clearBoard, drawObject, generateRandomPosition, handleSnakesBite } from '../../utils/utils';
+import { IObjectBody, clearBoard, drawObject, generateNotification, generateRandomPosition, handleSnakesBite } from '../../utils/utils';
 import {
   increaseSnake,
   INCREMENT_SCORE,
@@ -22,6 +22,8 @@ import {
 } from '../../store/actions';
 import { Rules } from '../Rules';
 import { GameButtons } from '../GameButtons';
+import { updateUser } from '../../api/requests';
+import { blueColor, mintColor, pinkColor, purpleColor } from '../../utils/constants.ts';
 
 export interface ICanvasBoard {
   height: number;
@@ -33,7 +35,9 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
   const disallowedDirection = useSelector(
     (state: IGlobalState) => state.disallowedDirection
   );
+  const score = useSelector((state: IGlobalState) => state.score);
   const dispatch = useDispatch();
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
     const [position, setPosition] = useState<IObjectBody>(
@@ -73,8 +77,8 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
       if (disallowedDirection) {
         switch (e.key) {
           case 'w':
-              moveSnake(0, -20, disallowedDirection);
-              break;
+            moveSnake(0, -20, disallowedDirection);
+            break;
 
           case 's':
             moveSnake(0, 20, disallowedDirection);
@@ -95,8 +99,9 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
           disallowedDirection !== 'UP' &&
           disallowedDirection !== 'DOWN' &&
           e.key === 'd'
-        )
+        ) {
           moveSnake(20, 0, disallowedDirection);
+        }
       }
     },
     [disallowedDirection, moveSnake]
@@ -109,15 +114,43 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
     dispatch(scoreUpdates(RESET_SCORE));
     clearBoard(context);
 
-    drawObject(context, snakeBody, "#00f5d4");
+    drawObject(context, snakeBody, mintColor);
     drawObject(
       context,
       [generateRandomPosition(width - 20, height - 20)],
-      "#00bbf9"
+      blueColor
     );
 
     window.addEventListener("keypress", handleKeyEvents);
   }, [context, dispatch, handleKeyEvents, height, snakeBody, width]);
+
+  const updateScore = useCallback(async () => {
+    const userId = localStorage.getItem('user');
+
+    if (userId) {
+      generateNotification({
+        text: 'We are upgrading your score...',
+        type: 'loading',
+      });
+
+      try {
+        await updateUser(userId, { score });
+
+        generateNotification({
+          text: 'Score was upgraded!',
+          type: 'success',
+        });
+        console.log('succes');
+      } catch (error) {
+        generateNotification({
+          text: 'Something went wrong, score was not upgraded',
+          type: 'success',
+        });
+
+        console.log(error);
+      }
+    }
+  }, [score]);
 
   useEffect(() => {
     if (isEaten) {
@@ -135,8 +168,8 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
     setContext(canvasRef.current && canvasRef.current.getContext('2d'));
   
     clearBoard(context);
-    drawObject(context, snakeBody, "#00f5d4");
-    drawObject(context, [position], "#f15bb5");
+    drawObject(context, snakeBody, mintColor);
+    drawObject(context, [position], pinkColor);
 
     if (snakeBody[0].x === position?.x && snakeBody[0].y === position?.y) {
       setIsEaten(true);
@@ -150,12 +183,13 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
     ) {
       setIsGameEnded(true);
       dispatch(stopGame());
+      updateScore();
 
       window.removeEventListener("keypress", handleKeyEvents);
     } else {
       setIsGameEnded(false)
     };
-  }, [context, position, snakeBody, height, width, dispatch, handleKeyEvents]);
+  }, [context, position, snakeBody, height, width, dispatch, handleKeyEvents, updateScore]);
 
   useEffect(() => {
     window.addEventListener("keypress", handleKeyEvents);
@@ -179,7 +213,7 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
       <canvas
         ref={canvasRef}
         style={{
-          border: `3px solid ${isGameEnded ? "#f15bb5" : "#9b5de5"}`,
+          border: `3px solid ${isGameEnded ? pinkColor : purpleColor}`,
           marginTop: "20px"
         }}
         height={height}

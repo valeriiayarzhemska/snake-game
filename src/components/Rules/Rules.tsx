@@ -33,6 +33,7 @@ export const Rules = ({ toggleRules }: IRules) => (
         <Heading as="h6" size="lg" mr={4}>
           How to Play
         </Heading>
+
         <CloseButton onClick={() => toggleRules()} />
       </Flex>
 

@@ -1,11 +1,17 @@
-import { Box, Button, Flex, Heading, Kbd } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Heading,
+  Kbd,
+} from '@chakra-ui/react';
+import { PrimaryButton } from '../PrimaryButton';
 
-export interface IRulesProps {
+export interface IGameButtons {
   resetBoard: () => void;
   toggleRules: () => void;
 }
 
-export const GameButtons = ({ resetBoard, toggleRules }: IRulesProps) => (
+export const GameButtons = ({ resetBoard, toggleRules }: IGameButtons) => (
   <Box>
     <Heading
       as="h5"
@@ -16,14 +22,16 @@ export const GameButtons = ({ resetBoard, toggleRules }: IRulesProps) => (
       Start the game by pressing <Kbd>d</Kbd>
     </Heading>
 
-    <Flex flexDirection="row" mt={3}>
-      <Flex flexDirection="column" mr={4}>
-        <Button onClick={() => toggleRules()}>How to Play</Button>
-      </Flex>
+    <Flex flexDirection="row" mt={3} gap={4}>
+      <PrimaryButton
+        text="How to Play"
+        handleClick={toggleRules}
+      />
 
-      <Flex flexDirection="column">
-        <Button onClick={() => resetBoard()}>Reset game</Button>
-      </Flex>
+      <PrimaryButton
+        text="Reset game"
+        handleClick={resetBoard}
+      />
     </Flex> 
   </Box>
 );

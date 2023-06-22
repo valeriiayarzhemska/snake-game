@@ -1,3 +1,6 @@
+import { INotificationLoader, NotificationLoader } from "../components/NotificationLoader";
+import { blueColor } from "./constants.ts";
+
 export const clearBoard = (context: CanvasRenderingContext2D | null) => {
   if (context) {
     context.clearRect(0, 0, 1000, 600);
@@ -13,7 +16,7 @@ export const drawObject = (
   context: CanvasRenderingContext2D | null,
   objectBody: IObjectBody[],
   fillColor: string,
-  strokeStyle = "#00bbf9",
+  strokeStyle = blueColor,
 ) => {
   if (context) {
     objectBody.forEach((object: IObjectBody) => {
@@ -54,4 +57,8 @@ export const handleSnakesBite = (
   });
 
   return point;
+}
+
+export const generateNotification = ({ text, type }: INotificationLoader) => {
+  <NotificationLoader text={text} type={type} />
 }
