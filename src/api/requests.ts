@@ -19,7 +19,7 @@ export const getUser = (userId: string): Promise<User> => {
   return get<User>(url);
 };
 
-export const createUser = (data: User): Promise<User> => {
+export const createUser = (data: Omit<User, 'id'>): Promise<User> => {
   return post<User>(USERS_ENDPOINT, {
     ...data,
   });

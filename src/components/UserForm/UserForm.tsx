@@ -55,10 +55,7 @@ export const UserForm = () => {
   }, []);
 
   const addNewUser = async (name: string) => {
-    const userId = uuidv4();
-
-    const newUser = {      
-      id: userId,
+    const newUser = {
       name,
       score: 0,
     };
@@ -66,7 +63,7 @@ export const UserForm = () => {
     try {
       const currNewUser = await createUser(newUser);
       
-      setUser(newUser.id);
+      setUser(currNewUser.id);
       setUsers(prevUsers => [...prevUsers, currNewUser]);
     } catch (error) {
       console.log(error);

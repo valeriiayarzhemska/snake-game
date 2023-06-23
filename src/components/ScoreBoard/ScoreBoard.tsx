@@ -19,15 +19,9 @@ export const ScoreBoard = ({
   isTopLoading,
   hasTopError,
 }: IScoreBoard) => {
-  
-
-  return (
-    <Box p={5} bg="white" borderRadius="md" maxWidth="600px">
-      <Heading as="h6" size="lg">
-        Top Players:
-      </Heading>
-
-      {isTopLoading && !hasTopError && (
+  const render = () => {
+    if (isTopLoading) {
+      return (
         <Flex
           flexDirection="column"
           mt={3}
@@ -35,9 +29,11 @@ export const ScoreBoard = ({
         >
           <Loader />
         </Flex>
-      )}
+      );
+    };
 
-      {!isTopLoading && hasTopError && (
+    if (hasTopError) {
+      return (
         <Flex
           flexDirection="row"
           mt={3}
@@ -48,9 +44,11 @@ export const ScoreBoard = ({
             Oops, something went wrong
           </Text>
         </Flex>
-      )}
+      );
+    };
 
-      {topUsers.length > 0 && !hasTopError && !isTopLoading && (
+    if (topUsers.length > 0) {
+      return (
         <Flex flexDirection="column">
           {topUsers.map(user => {
             const { name, score, id } = user;
@@ -74,7 +72,17 @@ export const ScoreBoard = ({
             )
             })}
         </Flex>
-      )}
+      );
+    };
+  }
+
+  return (
+    <Box p={5} bg="white" borderRadius="md" maxWidth="600px">
+      <Heading as="h6" size="lg">
+        Top Players:
+      </Heading>
+
+      {render()}
     </Box>
   );
 };
