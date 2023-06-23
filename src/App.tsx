@@ -4,7 +4,6 @@ import { getTopUsers } from './api/requests';
 import { Container, Heading } from '@chakra-ui/react';
 
 import { CanvasBoard } from './components/CanvasBoard';
-import { ScoreCard } from './components/ScoreCard';
 import { ScoreBoard } from './components/ScoreBoard';
 import { UserForm } from './components/UserForm/UserForm';
 
@@ -38,8 +37,6 @@ function App() {
       <Heading as="h1" size="xl">SNAKE GAME</Heading>
       
       <UserForm />
-      
-      <ScoreCard />
 
       <CanvasBoard
         height={600}

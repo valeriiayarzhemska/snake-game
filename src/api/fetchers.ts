@@ -7,7 +7,7 @@ export const get = async <T>(url: string): Promise<T> => {
   return data;
 };
 
-export const post = async <T>(url: string, body: User): Promise<T> => {
+export const post = async <T>(url: string, body: Omit<User, 'id'>): Promise<T> => {
   const { data } = await axios.post<T>(url, body);
 
   return data;

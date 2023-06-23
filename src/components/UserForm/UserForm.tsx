@@ -8,12 +8,12 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import useStickyState from '../../hooks/hooks';
 
 import { User } from '../../types/User';
 import { createUser, getAllUsers } from '../../api/requests';
-import { v4 as uuidv4 } from 'uuid';
-import { useForm } from 'react-hook-form';
-import useStickyState from '../../hooks/hooks';
+
 import { Loader } from '../Loader';
 
 interface FormValues {
@@ -55,10 +55,7 @@ export const UserForm = () => {
   }, []);
 
   const addNewUser = async (name: string) => {
-    const userId = uuidv4();
-
-    const newUser = {      
-      id: userId,
+    const newUser = {
       name,
       score: 0,
     };
@@ -66,7 +63,7 @@ export const UserForm = () => {
     try {
       const currNewUser = await createUser(newUser);
       
-      setUser(newUser.id);
+      setUser(currNewUser.id);
       setUsers(prevUsers => [...prevUsers, currNewUser]);
     } catch (error) {
       console.log(error);

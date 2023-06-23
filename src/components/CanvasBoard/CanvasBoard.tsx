@@ -32,6 +32,7 @@ import { Rules } from '../Rules';
 import { GameButtons } from '../GameButtons';
 import { getUser, updateUser } from '../../api/requests';
 import { blueColor, mintColor, pinkColor, purpleColor } from '../../constants';
+import { ScoreCard } from '../ScoreCard';
 
 export interface ICanvasBoard {
   height: number;
@@ -219,6 +220,8 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
         toggleRules={toggleRules}
         resetBoard={resetBoard}
       />
+      
+      <ScoreCard />
 
       {showRules && (
         <Rules toggleRules={toggleRules} />

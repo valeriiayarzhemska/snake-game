@@ -5,6 +5,7 @@ import {
   Heading,
   Kbd,
 } from '@chakra-ui/react';
+import { gameInstructions } from '../../constants';
 
 export interface IRules {
   toggleRules: () => void;
@@ -42,18 +43,11 @@ export const Rules = ({ toggleRules }: IRules) => (
       </Heading>
 
       <Flex flexDirection="column" mt={3}>
-        <span>
-          <Kbd>w</Kbd> Move Up
-        </span>
-        <span>
-          <Kbd>a</Kbd> Move Left
-        </span>
-        <span>
-          <Kbd>s</Kbd> Move Down
-        </span>
-        <span>
-          <Kbd>d</Kbd> Move Right
-        </span>
+        {Object.entries(gameInstructions).map(([key, value]) => (
+          <span key={key}>
+            <Kbd>{key}</Kbd> {value}
+          </span>
+        ))}
       </Flex>
 
       <Heading as="h5" size="sm" mt={3}>
