@@ -85,20 +85,24 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
   const handleKeyEvents = useCallback(
     (e: KeyboardEvent) => {
       if (disallowedDirection) {
-        switch (e.key) {
-          case 'w':
+        switch (e.code) {
+          case 'KeyW':
+          case 'KeyW'.toLowerCase():
             moveSnake(0, -20, disallowedDirection);
             break;
 
-          case 's':
+          case 'KeyS':
+          case 'KeyS'.toLowerCase():
             moveSnake(0, 20, disallowedDirection);
             break;
 
-          case 'a':
+          case 'KeyA':
+          case 'KeyA'.toLowerCase():
             moveSnake(-20, 0, disallowedDirection);
             break;
 
-          case 'd':
+          case 'KeyD':
+          case 'KeyD'.toLowerCase():
             e.preventDefault();
             moveSnake(20, 0, disallowedDirection);
             break;
@@ -108,7 +112,7 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
           disallowedDirection !== 'LEFT' &&
           disallowedDirection !== 'UP' &&
           disallowedDirection !== 'DOWN' &&
-          e.key === 'd'
+          (e.code === 'KeyD' || e.code === 'KeyD'.toLowerCase())
         ) {
           moveSnake(20, 0, disallowedDirection);
         }
