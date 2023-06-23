@@ -195,10 +195,10 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
     }
 
     if (handleSnakesBite(snakeBody, snakeBody[0])
-      || snakeBody[0].x >= width
-      || snakeBody[0].x <= 0
-      || snakeBody[0].y <= 0
-      || snakeBody[0].y >= height
+      || snakeBody[0].x > width - 20
+      || snakeBody[0].x < 0
+      || snakeBody[0].y < 0
+      || snakeBody[0].y > height - 20
     ) {
       setIsGameEnded(true);
       dispatch(stopGame());
