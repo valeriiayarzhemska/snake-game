@@ -1,5 +1,5 @@
 import { RotatingSquare } from  'react-loader-spinner'
-import { mintColor } from '../../utils/constants.ts';
+import { mintColor } from '../../constants';
 
 export const Loader = () => (
   <RotatingSquare

@@ -1,5 +1,4 @@
-import { INotificationLoader, NotificationLoader } from "../components/NotificationLoader";
-import { blueColor } from "./constants.ts";
+import { blueColor } from '../constants';
 
 export const clearBoard = (context: CanvasRenderingContext2D | null) => {
   if (context) {
@@ -57,8 +56,4 @@ export const handleSnakesBite = (
   });
 
   return point;
-}
-
-export const generateNotification = ({ text, type }: INotificationLoader) => {
-  <NotificationLoader text={text} type={type} />
 }

@@ -6,7 +6,14 @@ import {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IGlobalState } from '../../store/reducers';
-import { IObjectBody, clearBoard, drawObject, generateNotification, generateRandomPosition, handleSnakesBite } from '../../utils/utils';
+import {
+  IObjectBody,
+  clearBoard,
+  drawObject,
+  generateRandomPosition,
+  handleSnakesBite,
+} from '../../utils/utils';
+
 import {
   increaseSnake,
   INCREMENT_SCORE,
@@ -20,17 +27,19 @@ import {
   scoreUpdates,
   stopGame,
 } from '../../store/actions';
+
 import { Rules } from '../Rules';
 import { GameButtons } from '../GameButtons';
-import { updateUser } from '../../api/requests';
-import { blueColor, mintColor, pinkColor, purpleColor } from '../../utils/constants.ts';
+import { getUser, updateUser } from '../../api/requests';
+import { blueColor, mintColor, pinkColor, purpleColor } from '../../constants';
 
 export interface ICanvasBoard {
   height: number;
   width: number;
+  loadTopUsers: () => void;
 }
 
-export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
+export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
   const snakeBody = useSelector((state: IGlobalState) => state.snake);
   const disallowedDirection = useSelector(
     (state: IGlobalState) => state.disallowedDirection
@@ -124,33 +133,38 @@ export const CanvasBoard = ({ height, width }: ICanvasBoard) => {
     window.addEventListener("keypress", handleKeyEvents);
   }, [context, dispatch, handleKeyEvents, height, snakeBody, width]);
 
+  const findPlayer = useCallback(async (id: string) => {
+    try {
+      const user = await getUser(id);
+
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const updateScore = useCallback(async () => {
     const userId = localStorage.getItem('user');
 
     if (userId) {
-      generateNotification({
-        text: 'We are upgrading your score...',
-        type: 'loading',
-      });
+      const playerId = userId.replace(/"/g, '');
+      const player = await findPlayer(playerId);
 
-      try {
-        await updateUser(userId, { score });
-
-        generateNotification({
-          text: 'Score was upgraded!',
-          type: 'success',
-        });
-        console.log('succes');
-      } catch (error) {
-        generateNotification({
-          text: 'Something went wrong, score was not upgraded',
-          type: 'success',
-        });
-
-        console.log(error);
+      if (player) {
+        if (player.score < score) {
+          try {
+            await updateUser(playerId, { score });
+  
+            loadTopUsers();
+          } catch (error) {  
+            console.log(error);
+          }       
+        } 
       }
+
+      return;
     }
-  }, [score]);
+  }, [score, findPlayer, loadTopUsers]);
 
   useEffect(() => {
     if (isEaten) {

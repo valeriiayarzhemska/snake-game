@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { ChakraProvider } from '@chakra-ui/react';
 import { store } from './store';
 import { extendTheme } from '@chakra-ui/react';
-import { blueColor, pinkColor } from './utils/constants.ts';
+import { blueColor, pinkColor } from './constants';
 
 const theme = extendTheme({
   components: {

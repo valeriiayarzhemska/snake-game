@@ -57,7 +57,7 @@ export const Rules = ({ toggleRules }: IRules) => (
       </Flex>
 
       <Heading as="h5" size="sm" mt={3}>
-        To start the game again when you loose, press <Kbd>Reset Game</Kbd>
+        To start the game again when you lose, press <Kbd>Reset Game</Kbd>
       </Heading>
     </Box>
   </Box>

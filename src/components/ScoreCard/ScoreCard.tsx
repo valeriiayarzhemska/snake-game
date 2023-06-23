@@ -1,7 +1,7 @@
 import { Heading } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { IGlobalState } from '../../store/reducers';
-import { pinkColor } from '../../utils/constants.ts';
+import { pinkColor } from '../../constants';
 
 export const ScoreCard = () => {
   const score = useSelector((state: IGlobalState) => state.score);

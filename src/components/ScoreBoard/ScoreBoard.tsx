@@ -5,35 +5,21 @@ import {
   Kbd,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { User } from '../../types/User';
-import { getTopUsers } from '../../api/requests';
 import { Loader } from '../Loader';
+import { User } from '../../types/User';
 
-export const ScoreBoard = React.memo(() => {
-  const [topUsers, setTopUsers] = useState<User[]>([]);
-  const [isTopLoading, setIsTopLoading] = useState(false);
-  const [hasTopError, setTopHasError] = useState(false);
+export interface IScoreBoard {
+  topUsers: User[];
+  isTopLoading: boolean;
+  hasTopError: boolean;
+}
+
+export const ScoreBoard = ({
+  topUsers,
+  isTopLoading,
+  hasTopError,
+}: IScoreBoard) => {
   
-  useEffect(() => {
-    const loadData = async () => {
-      setIsTopLoading(true);
-
-      try {
-        const topUsersFromServer = await getTopUsers();
-
-        setTopUsers(topUsersFromServer);
-      } catch (error) {
-        setTopHasError(true);
-        console.log(error);
-      }
-
-      setIsTopLoading(false);
-      setTopHasError(false);
-    };
-
-    loadData();
-  }, []);
 
   return (
     <Box p={5} bg="white" borderRadius="md" maxWidth="600px">
@@ -91,4 +77,4 @@ export const ScoreBoard = React.memo(() => {
       )}
     </Box>
   );
-});
+};
