@@ -71,7 +71,7 @@ export const gameReducer: Reducer<IGlobalState, any> = (state = globalState, act
     case INCREMENT_SCORE:
       return {
         ...state,
-        score: state.score + 1,
+        score: state.score + action.payload,
       };
 
     case RESET:

@@ -33,7 +33,12 @@ export const makeMove = (deltaX: number, deltaY: number, move: string) => ({
 
 export const increaseSnake = () => ({ type: INCREASE_SNAKE });
 
-export const scoreUpdates = (type: string) => ({ type });
+export const scoreResets = (type: string) => ({ type });
+
+export const scoreUpdates = (points: number) => ({
+  type: INCREMENT_SCORE,
+  payload: points,
+});
 
 export const stopGame = () => ({ type: STOP_GAME });
 

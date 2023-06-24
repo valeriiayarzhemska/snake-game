@@ -10,20 +10,21 @@ import {
   IObjectBody,
   clearBoard,
   drawObject,
+  generateRandomFeed,
   generateRandomPosition,
   handleSnakesBite,
 } from '../../utils/utils';
 
 import {
   increaseSnake,
-  INCREMENT_SCORE,
   makeMove,
   MOVE_DOWN,
   MOVE_LEFT,
   MOVE_RIGHT,
   MOVE_UP,
-  resetGame,
   RESET_SCORE,
+  resetGame,
+  scoreResets,
   scoreUpdates,
   stopGame,
 } from '../../store/actions';
@@ -31,8 +32,9 @@ import {
 import { Rules } from '../Rules';
 import { GameButtons } from '../GameButtons';
 import { getUser, updateUser } from '../../api/requests';
-import { blueColor, mintColor, pinkColor, purpleColor } from '../../constants';
+import { feedTypes, mintColor, pinkColor, purpleColor } from '../../constants';
 import { ScoreCard } from '../ScoreCard';
+import { FeedType } from '../../types/FeedType';
 
 export interface ICanvasBoard {
   height: number;
@@ -53,7 +55,9 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
     const [position, setPosition] = useState<IObjectBody>(
     generateRandomPosition(width - 20, height - 20)
 	);
-  const [isEaten, setIsEaten] = useState<boolean>(false);
+
+  const [feed, setFeed] = useState<FeedType>(feedTypes[0]);
+  const isEatenRef = useRef<boolean>(false);
   const [isGameEnded, setIsGameEnded] = useState<boolean>(false);
   const [showRules, setShowRules] = useState(false);
 
@@ -125,18 +129,18 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
     window.removeEventListener("keypress", handleKeyEvents);
 
     dispatch(resetGame());
-    dispatch(scoreUpdates(RESET_SCORE));
+    dispatch(scoreResets(RESET_SCORE));
     clearBoard(context);
 
     drawObject(context, snakeBody, mintColor);
     drawObject(
       context,
       [generateRandomPosition(width - 20, height - 20)],
-      blueColor
+      feed.color,
     );
 
     window.addEventListener("keypress", handleKeyEvents);
-  }, [context, dispatch, handleKeyEvents, height, snakeBody, width]);
+  }, [context, dispatch, handleKeyEvents, height, snakeBody, width, feed]);
 
   const findPlayer = useCallback(async (id: string) => {
     try {
@@ -172,26 +176,28 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
   }, [score, findPlayer, loadTopUsers]);
 
   useEffect(() => {
-    if (isEaten) {
+    if (isEatenRef.current) {
       const fruitPosition = generateRandomPosition(width - 20, height - 20);
-      
       setPosition(fruitPosition);
-      setIsEaten(false);
-
+      isEatenRef.current = false;
+  
       dispatch(increaseSnake());
-      dispatch(scoreUpdates(INCREMENT_SCORE));
+      dispatch(scoreUpdates(feed.points));
+  
+      const randomFeed = feedTypes[generateRandomFeed(feedTypes.length)];
+      setFeed(randomFeed);
     }
-  }, [isEaten, position, height, width, dispatch]);
+  }, [isEatenRef, feed.points, position, snakeBody, height, width, dispatch]);  
 
   useEffect(() => {
     setContext(canvasRef.current && canvasRef.current.getContext('2d'));
   
     clearBoard(context);
     drawObject(context, snakeBody, mintColor);
-    drawObject(context, [position], pinkColor);
+    drawObject(context, [position], feed.color);
 
     if (snakeBody[0].x === position?.x && snakeBody[0].y === position?.y) {
-      setIsEaten(true);
+      isEatenRef.current = true;
     }
 
     if (handleSnakesBite(snakeBody, snakeBody[0])
@@ -208,7 +214,7 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
     } else {
       setIsGameEnded(false)
     };
-  }, [context, position, snakeBody, height, width, dispatch, handleKeyEvents, updateScore]);
+  }, [context, position, snakeBody, height, width, dispatch, handleKeyEvents, updateScore, feed.color]);
 
   useEffect(() => {
     window.addEventListener("keypress", handleKeyEvents);

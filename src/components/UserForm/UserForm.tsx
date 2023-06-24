@@ -107,6 +107,14 @@ export const UserForm = () => {
     );
   };
 
+  useEffect(() => {
+    if (user.length > 0) {
+      document.body.style.overflow = 'auto';
+    } else {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [user]);
+
   return (
     <>      
       {user.length <= 0 && (

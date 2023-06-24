@@ -56,4 +56,8 @@ export const handleSnakesBite = (
   });
 
   return point;
-}
+};
+
+export const generateRandomFeed = (feedLength: number): number => {
+  return Math.floor(Math.random() * feedLength);
+};
