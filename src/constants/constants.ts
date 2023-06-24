@@ -4,12 +4,12 @@ export const blueColor = '#00bbf9';
 export const mintColor = '#00f5d4';
 export const yellowColor = '#fee440';
 
-export const gameInstructions = {
-  'w': 'Move Up',
-  'a': 'Move Left',
-  's': 'Move Down',
-  'd': 'Move Right',
-};
+export const gameInstructions = [
+  { key: 'w', instruction: 'Move Up' },
+  { key: 'a', instruction: 'Move Left' },
+  { key: 's', instruction: 'Move Down' },
+  { key: 'd', instruction: 'Move Right' },
+];
 
 export const feedTypes = [
   { points: 1, color: pinkColor },
