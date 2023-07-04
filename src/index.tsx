@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import { Provider } from 'react-redux';
 import { ChakraProvider } from '@chakra-ui/react';
-import { store } from './store';
 import { extendTheme } from '@chakra-ui/react';
+import { store } from './store';
+import App from './App';
 import { blueColor, pinkColor } from './constants';
 
 const theme = extendTheme({

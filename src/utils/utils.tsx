@@ -1,3 +1,4 @@
+import { createUser } from '../api/requests';
 import { blueColor } from '../constants';
 
 export const clearBoard = (context: CanvasRenderingContext2D | null) => {
@@ -60,4 +61,23 @@ export const handleSnakesBite = (
 
 export const generateRandomFeed = (feedLength: number): number => {
   return Math.floor(Math.random() * feedLength);
+};
+
+export const addNewUser = async (name: string) => {
+  const newUser = {
+    name,
+    score: 0,
+  };
+
+  try {
+    const currNewUser = await createUser(newUser);
+
+    return currNewUser;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const normalizeValueInStorage = (value: string) => {
+  return value.replace(/"/g, '');
 };

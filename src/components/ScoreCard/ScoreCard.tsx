@@ -1,10 +1,9 @@
+import { RootState, useAppSelector } from '../../store';
 import { Heading } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
-import { IGlobalState } from '../../store/reducers';
 import { pinkColor } from '../../constants';
 
 export const ScoreCard = () => {
-  const score = useSelector((state: IGlobalState) => state.score);
+  const score = useAppSelector((state: RootState) => state.game.score);
   
   return (
     <Heading as="h2" size="md" mt={3} color={pinkColor}>

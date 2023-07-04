@@ -1,13 +1,28 @@
-import { createStore, applyMiddleware } from 'redux';
+import { configureStore, getDefaultMiddleware, AnyAction, Reducer, combineReducers } from '@reduxjs/toolkit';
+import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { gameReducer } from './reducers';
 import { watcherSaga } from './sagas';
-import { IGlobalState } from './reducers';
+import { gameReducer, IGlobalState } from './reducers';
+import userSlice, { IUserState } from './slices/userSlice';
+
+export interface RootState {
+  game: IGlobalState;
+  user: IUserState;
+}
 
 const sagaMiddleware = createSagaMiddleware();
-export const store = createStore<IGlobalState, any, any, any>(
-  gameReducer,
-  applyMiddleware(sagaMiddleware)
-);
+
+const rootReducer: Reducer<RootState, AnyAction> = combineReducers<RootState>({
+  game: gameReducer,
+  user: userSlice,
+});
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: [...getDefaultMiddleware(), sagaMiddleware],
+});
 
 sagaMiddleware.run(watcherSaga);
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppDispatch = () => useDispatch<typeof store.dispatch>();

@@ -6,6 +6,7 @@ import { Container, Heading } from '@chakra-ui/react';
 import { CanvasBoard } from './components/CanvasBoard';
 import { ScoreBoard } from './components/ScoreBoard';
 import { UserForm } from './components/UserForm/UserForm';
+import { UserChangeButton } from './components/UserChangeButton';
 
 function App() {
   const [topUsers, setTopUsers] = useState<User[]>([]);
@@ -35,21 +36,22 @@ function App() {
   return (
     <Container maxW="container.lg" p={3} centerContent>
       <Heading as="h1" size="xl">SNAKE GAME</Heading>
-      
-      <UserForm />
 
       <CanvasBoard
         height={600}
         width={1000}
         loadTopUsers={loadTopUsers}
-
       />
+      
+      <UserForm />
       
       <ScoreBoard
         topUsers={topUsers}
         isTopLoading={isTopLoading}
         hasTopError={hasTopError}
       />
+
+      <UserChangeButton />
     </Container>
   );
 }

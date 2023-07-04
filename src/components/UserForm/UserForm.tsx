@@ -1,38 +1,46 @@
 import { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-} from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
+import { Box } from '@chakra-ui/react';
 import useStickyState from '../../hooks/hooks';
 
+import { useAppDispatch } from '../../store';
+import * as userActions from '../../store/slices/userSlice';
+
 import { User } from '../../types/User';
-import { createUser, getAllUsers } from '../../api/requests';
+import { getAllUsers } from '../../api/requests';
+import { addNewUser } from '../../utils';
 
 import { Loader } from '../Loader';
-
-interface FormValues {
-  name: string;
-}
+import { FormValues, UserNameForm } from '../UserNameForm';
+import { Notification } from '../Notification';
 
 export const UserForm = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [user, setUser] = useStickyState<string>('', 'user');
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-  } = useForm<FormValues>();
+  const [userId, setUserId] = useStickyState<string>('', 'userId');
+  const dispatch = useAppDispatch();
 
+  const createNewUser = async (name: string) => {
+    setIsLoading(true);
+
+    try {
+      const currNewUser = await addNewUser(name);
+  
+      if (currNewUser) {
+        setUserId(currNewUser.id);
+        setUsers(prevUsers => [...prevUsers, currNewUser]);
+        dispatch(userActions.setUsername(name));
+      }
+    } catch {
+      setHasError(true);
+    }
+
+    setIsLoading(false);
+    setHasError(false);
+  };
+  
   const onSubmit = async (data: FormValues) => {
-    await addNewUser(data.name);
+    await createNewUser(data.name);
   };
 
   useEffect(() => {
@@ -43,7 +51,7 @@ export const UserForm = () => {
         const usersFromServer = await getAllUsers();
 
         setUsers(usersFromServer);
-      } catch (error) {
+      } catch {
         setHasError(true);
       }
 
@@ -54,22 +62,6 @@ export const UserForm = () => {
     loadData();
   }, []);
 
-  const addNewUser = async (name: string) => {
-    const newUser = {
-      name,
-      score: 0,
-    };
-
-    try {
-      const currNewUser = await createUser(newUser);
-      
-      setUser(currNewUser.id);
-      setUsers(prevUsers => [...prevUsers, currNewUser]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const render = () => {
     if (isLoading) {
       return <Loader />
@@ -77,47 +69,35 @@ export const UserForm = () => {
 
     if (hasError) {
       return (
-        <Heading as="h1" size="xl">
-          Oops, something went wrong
-        </Heading>
+        <Notification 
+          mainText='Sorry, something went wrong :c'
+        />
       )
     }
 
     return (
-      <Box p={5} bg="white" borderRadius="md" maxWidth="600px">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={!!errors.name} mb={4}>
-            <FormLabel htmlFor="name">Name</FormLabel>
-
-            <Input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              {...register('name', { required: 'Name is required' })}
-            />
-
-            <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
-          </FormControl>
-
-          <Button type="submit" isLoading={false}>
-            Play <span role="img" aria-label="snake">🐍</span>
-          </Button>
-        </form>
-      </Box>
+      <UserNameForm 
+        handleSubmitUsername={onSubmit}
+        inputLabel='Your name?'
+      />
     );
   };
 
-  useEffect(() => {
-    if (user.length > 0) {
+  const updateBodyOverflow = () => {
+    if (userId.length > 1) {
       document.body.style.overflow = 'auto';
     } else {
       document.body.style.overflow = 'hidden';
     }
-  }, [user]);
+  };
+
+  useEffect(() => {
+    updateBodyOverflow();
+  }, [userId]);
 
   return (
     <>      
-      {user.length <= 0 && (
+      {userId.length <= 0 && (
         <Box
           position="fixed"
           top={0}

@@ -4,8 +4,6 @@ import {
   useState,
   useCallback,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { IGlobalState } from '../../store/reducers';
 import {
   IObjectBody,
   clearBoard,
@@ -13,7 +11,7 @@ import {
   generateRandomFeed,
   generateRandomPosition,
   handleSnakesBite,
-} from '../../utils/utils';
+} from '../../utils';
 
 import {
   increaseSnake,
@@ -35,6 +33,8 @@ import { getUser, updateUser } from '../../api/requests';
 import { feedTypes, mintColor, pinkColor, purpleColor } from '../../constants';
 import { ScoreCard } from '../ScoreCard';
 import { FeedType } from '../../types/FeedType';
+import { Heading } from '@chakra-ui/react';
+import { RootState, useAppDispatch, useAppSelector } from '../../store';
 
 export interface ICanvasBoard {
   height: number;
@@ -43,12 +43,13 @@ export interface ICanvasBoard {
 }
 
 export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
-  const snakeBody = useSelector((state: IGlobalState) => state.snake);
-  const disallowedDirection = useSelector(
-    (state: IGlobalState) => state.disallowedDirection
+  const snakeBody = useAppSelector((state: RootState) => state.game.snake);
+  const disallowedDirection = useAppSelector(
+    (state: RootState) => state.game.disallowedDirection
   );
-  const score = useSelector((state: IGlobalState) => state.score);
-  const dispatch = useDispatch();
+  const score = useAppSelector((state: RootState) => state.game.score);
+  const userName = useAppSelector((state: RootState) => state.user.username);
+  const dispatch = useAppDispatch();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
@@ -153,7 +154,7 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
   }, []);
 
   const updateScore = useCallback(async () => {
-    const userId = localStorage.getItem('user');
+    const userId = localStorage.getItem('userId');
 
     if (userId) {
       const playerId = userId.replace(/"/g, '');
@@ -163,6 +164,7 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
         if (player.score < score) {
           try {
             await updateUser(playerId, { score });
+            console.log(playerId);
   
             loadTopUsers();
           } catch (error) {  
@@ -246,6 +248,12 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
         height={height}
         width={width}
       />
+
+      {userName && (
+        <Heading as="h2" size="md" mt={3} color={pinkColor}>
+          Are you the biggest snake, {userName}?
+        </Heading>
+      )}
     </>
   );
 };
