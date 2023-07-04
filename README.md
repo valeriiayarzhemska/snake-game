@@ -1,5 +1,5 @@
 # Snake Game Project
-This is a Snake Game project built with React, TypeScript, Redux Saga, and Chakra UI.
+This is a Snake Game project built with React, TypeScript, Redux Saga, Redux Toolkit and Chakra UI.
 
 ## Installation
 To run the Snake Game project locally, follow these steps:
