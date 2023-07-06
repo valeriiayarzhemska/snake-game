@@ -11,6 +11,7 @@ import {
   generateRandomFeed,
   generateRandomPosition,
   handleSnakesBite,
+  normalizeValueInStorage,
 } from '../../utils';
 
 import {
@@ -27,14 +28,22 @@ import {
   stopGame,
 } from '../../store/actions';
 
-import { Rules } from '../Rules';
-import { GameButtons } from '../GameButtons';
+import {
+  useSnakeBody,
+  useDisallowedDirection,
+  useScore,
+} from '../../hooks/useGameSelectors';
+import { useAppDispatch } from '../../store';
+
 import { getUser, updateUser } from '../../api/requests';
 import { feedTypes, mintColor, pinkColor, purpleColor } from '../../constants';
-import { ScoreCard } from '../ScoreCard';
 import { FeedType } from '../../types/FeedType';
-import { Heading } from '@chakra-ui/react';
-import { RootState, useAppDispatch, useAppSelector } from '../../store';
+
+import { Rules } from '../Rules';
+import { GameButtons } from '../GameButtons';
+import { ScoreCard } from '../ScoreCard';
+import { UserName } from '../UserName';
+import { GameEndedNote } from '../GameEndedNote';
 
 export interface ICanvasBoard {
   height: number;
@@ -43,17 +52,14 @@ export interface ICanvasBoard {
 }
 
 export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
-  const snakeBody = useAppSelector((state: RootState) => state.game.snake);
-  const disallowedDirection = useAppSelector(
-    (state: RootState) => state.game.disallowedDirection
-  );
-  const score = useAppSelector((state: RootState) => state.game.score);
-  const userName = useAppSelector((state: RootState) => state.user.username);
+  const snakeBody = useSnakeBody();
+  const disallowedDirection = useDisallowedDirection();
+  const score = useScore();
   const dispatch = useAppDispatch();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-    const [position, setPosition] = useState<IObjectBody>(
+  const [position, setPosition] = useState<IObjectBody>(
     generateRandomPosition(width - 20, height - 20)
 	);
 
@@ -156,24 +162,23 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
   const updateScore = useCallback(async () => {
     const userId = localStorage.getItem('userId');
 
-    if (userId) {
-      const playerId = userId.replace(/"/g, '');
-      const player = await findPlayer(playerId);
-
-      if (player) {
-        if (player.score < score) {
-          try {
-            await updateUser(playerId, { score });
-            console.log(playerId);
-  
-            loadTopUsers();
-          } catch (error) {  
-            console.log(error);
-          }       
-        } 
-      }
-
+    if (!userId) {
       return;
+    }
+
+    const playerId = normalizeValueInStorage(userId);
+    const player = await findPlayer(playerId);
+
+    if (!player || player.score >= score) {
+      return;
+    }
+
+    try {
+      await updateUser(playerId, { score });
+
+      loadTopUsers();
+    } catch (error) {
+      console.log(error);
     }
   }, [score, findPlayer, loadTopUsers]);
 
@@ -249,11 +254,11 @@ export const CanvasBoard = ({ height, width, loadTopUsers }: ICanvasBoard) => {
         width={width}
       />
 
-      {userName && (
-        <Heading as="h2" size="md" mt={3} color={pinkColor}>
-          Are you the biggest snake, {userName}?
-        </Heading>
+      {isGameEnded && (
+        <GameEndedNote />
       )}
+
+      <UserName />
     </>
   );
 };

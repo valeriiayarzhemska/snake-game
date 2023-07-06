@@ -77,9 +77,15 @@ export const ScoreBoard = ({
   }
 
   return (
-    <Box p={5} bg="white" borderRadius="md" maxWidth="600px">
+    <Box
+      p={5}
+      bg="white"
+      borderRadius="md"
+      maxWidth="600px"
+      mt={2}
+    >
       <Heading as="h6" size="lg">
-        Top Players:
+        <span role="img" aria-label="snake">🐍</span> Top Players:
       </Heading>
 
       {render()}

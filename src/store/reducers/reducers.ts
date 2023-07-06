@@ -56,16 +56,40 @@ export const gameReducer: Reducer<IGlobalState, any> = (state = globalState, act
 
     case INCREASE_SNAKE:
       const snakeLength = state.snake.length;
+      const lastPart = state.snake[snakeLength - 1];
+      const secondLastPart = state.snake[snakeLength - 2];
+
+      let newPart;
+
+      if (lastPart.x === secondLastPart.x) {
+        if (lastPart.y > secondLastPart.y) {
+          newPart = {
+            x: lastPart.x,
+            y: lastPart.y + 20,
+          };
+        } else {
+          newPart = {
+            x: lastPart.x,
+            y: lastPart.y - 20,
+          };
+        }
+      } else {
+        if (lastPart.x > secondLastPart.x) {
+          newPart = {
+            x: lastPart.x + 20,
+            y: lastPart.y,
+          };
+        } else {
+          newPart = {
+            x: lastPart.x - 20,
+            y: lastPart.y,
+          };
+        }
+      }
 
       return {
         ...state,
-        snake: [
-          ...state.snake,
-          {
-            x: state.snake[snakeLength - 1].x - 20,
-            y: state.snake[snakeLength - 1].y - 20,
-          },
-        ],
+        snake: [...state.snake, newPart],
       };
 
     case INCREMENT_SCORE:

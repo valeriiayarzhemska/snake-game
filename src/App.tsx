@@ -3,6 +3,7 @@ import { User } from './types/User';
 import { getTopUsers } from './api/requests';
 import { Container, Heading } from '@chakra-ui/react';
 
+
 import { CanvasBoard } from './components/CanvasBoard';
 import { ScoreBoard } from './components/ScoreBoard';
 import { UserForm } from './components/UserForm/UserForm';
@@ -20,9 +21,8 @@ function App() {
       const topUsersFromServer = await getTopUsers();
 
       setTopUsers(topUsersFromServer);
-    } catch (error) {
+    } catch {
       setTopHasError(true);
-      console.log(error);
     }
 
     setIsTopLoading(false);

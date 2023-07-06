@@ -10,15 +10,18 @@ import { PrimaryButton } from '../PrimaryButton';
 import { FormValues, UserNameForm } from '../UserNameForm';
 import { Loader } from '../Loader';
 import { Notification } from '../Notification';
+import useStickyState from '../../hooks/useStickyState';
 
 export const UserChangeButton = () => {
   const [changeUserName, setChangeUserName] = useState(false);
   const [isUserNameLoading, setIsUserNameLoading] = useState(false);
   const [hasUserChangeError, setHasUserChangeError] = useState(false);
+  const [userName, setUserName] = useStickyState<string>('', 'userName');
   const dispatch = useAppDispatch();
 
   const handleUsernameChange = async (data: FormValues) => {
     const userId = localStorage.getItem('userId');
+    const { name } = data;
 
     if (userId && userId !== '') {
       setIsUserNameLoading(true);
@@ -26,11 +29,12 @@ export const UserChangeButton = () => {
       const playerId = normalizeValueInStorage(userId);
       
       try {
-        const updatedUser = await updateUser(playerId, { name: data.name });
+        const updatedUser = await updateUser(playerId, { name: name });
 
         if (updatedUser) {
           setChangeUserName(!changeUserName);
-          dispatch(userActions.setUsername(data.name));
+          dispatch(userActions.setUsername(name));
+          setUserName(name);
 
           window.location.reload();
         }

@@ -1,9 +1,9 @@
-import { RootState, useAppSelector } from '../../store';
+import { useScore } from '../../hooks/useGameSelectors';
 import { Heading } from '@chakra-ui/react';
 import { pinkColor } from '../../constants';
 
 export const ScoreCard = () => {
-  const score = useAppSelector((state: RootState) => state.game.score);
+  const score = useScore();
   
   return (
     <Heading as="h2" size="md" mt={3} color={pinkColor}>

@@ -19,7 +19,14 @@ const theme = extendTheme({
       baseStyle: {
         color: pinkColor,
       },
-    }
+    },
+  },
+  styles: {
+    global: {
+      body: {
+        fontFamily: "'Roboto', sans-serif",
+      },
+    },
   },
 });
 

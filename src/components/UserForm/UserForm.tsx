@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import useStickyState from '../../hooks/hooks';
+import useStickyState from '../../hooks/useStickyState';
 
 import { useAppDispatch } from '../../store';
 import * as userActions from '../../store/slices/userSlice';
@@ -18,6 +18,7 @@ export const UserForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [userId, setUserId] = useStickyState<string>('', 'userId');
+  const [userName, setUserName] = useStickyState<string>('', 'userName');
   const dispatch = useAppDispatch();
 
   const createNewUser = async (name: string) => {
@@ -29,6 +30,8 @@ export const UserForm = () => {
       if (currNewUser) {
         setUserId(currNewUser.id);
         setUsers(prevUsers => [...prevUsers, currNewUser]);
+        setUserName(name);
+  
         dispatch(userActions.setUsername(name));
       }
     } catch {
