@@ -18,7 +18,7 @@ export const Rules = ({ toggleRules }: IRules) => {
     document.body.style.overflow = 'hidden';
 
     return () => {
-      document.body.style.overflow = 'visible';
+      document.body.style.overflow = '';
     };
   }, []);
 

@@ -86,7 +86,7 @@ export const UserChangeButton = () => {
 
   useEffect(() => {
     if (!changeUserName) {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     } else {
       document.body.style.overflow = 'hidden';
     }

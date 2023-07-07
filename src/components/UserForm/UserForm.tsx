@@ -44,6 +44,8 @@ export const UserForm = () => {
   
   const onSubmit = async (data: FormValues) => {
     await createNewUser(data.name);
+
+    document.body.style.overflow = 'auto';
   };
 
   useEffect(() => {
@@ -66,6 +68,8 @@ export const UserForm = () => {
   }, []);
 
   const render = () => {
+    document.body.style.overflow = 'hidden';
+
     if (isLoading) {
       return <Loader />
     };
@@ -85,18 +89,6 @@ export const UserForm = () => {
       />
     );
   };
-
-  const updateBodyOverflow = () => {
-    if (userId.length > 1) {
-      document.body.style.overflow = 'auto';
-    } else {
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  useEffect(() => {
-    updateBodyOverflow();
-  }, [userId]);
 
   return (
     <>      
