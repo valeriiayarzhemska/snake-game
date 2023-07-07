@@ -24,8 +24,9 @@ The main dependencies used in this project are:
 
 - React
 - TypeScript
-- Redux, Redux Saga
+- Redux, Redux Saga, Redux Toolkit
 - Chakra UI
+- Howler
 
 ## Contributing
 Contributions to the Snake Game project are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's repository.
