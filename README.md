@@ -1,6 +1,9 @@
 # Snake Game Project
 This is a Snake Game project built with React, TypeScript, Redux Saga, Redux Toolkit and Chakra UI.
 
+## Deploy
+https://snake-game-production-258b.up.railway.app/
+
 ## Installation
 To run the Snake Game project locally, follow these steps:
 
